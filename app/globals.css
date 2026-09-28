@@ -1062,6 +1062,10 @@ a {
   font-weight: 800;
 }
 
+.rq-open.rq-closed {
+  color: #ef4444;
+}
+
 .rq-provider-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -9894,3 +9898,141 @@ html.dark .rq-sos-section {
   background: #07152f;
 }
 
+/* =========================================================
+   SHOP REGISTER - SERVICE TYPE SELECT
+   Only affects the service type dropdown.
+   ========================================================= */
+
+.auth-select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.auth-select-wrap .auth-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 19px;
+  height: 19px;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.auth-select {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 36px 0 44px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #64748b;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+
+  cursor: pointer;
+
+  appearance: auto;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.auth-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.auth-select option {
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Dark theme */
+html.dark .auth-select {
+  border-color: #40516a;
+  background: #0c1728;
+ color: #64748b;
+}
+
+html.dark .auth-select:focus {
+  border-color: #3b82f6;
+  background: #0d1a2d;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+}
+
+html.dark .auth-select option {
+  background: #0c1728;
+  color: #f8fafc;
+}
+
+html.dark .auth-select-wrap .auth-input-icon {
+  color: #94a3b8;
+}
+
+/* Premium provider status badge */
+.rq-provider-card .rq-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-width: 58px;
+  height: 28px;
+
+  padding: 0 11px;
+
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 999px;
+
+  background: rgba(34, 197, 94, 0.10);
+  color: #16a34a;
+
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+
+  box-shadow:
+    0 2px 8px rgba(34, 197, 94, 0.08);
+
+  white-space: nowrap;
+}
+
+/* Small status dot */
+.rq-provider-card .rq-open::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+  background: #22c55e;
+
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.10);
+}
+
+/* Closed status */
+.rq-provider-card .rq-open.rq-closed {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: rgba(239, 68, 68, 0.10);
+  color: #dc2626;
+
+  box-shadow:
+    0 2px 8px rgba(239, 68, 68, 0.08);
+}
+
+.rq-provider-card .rq-open.rq-closed::before {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10);
+}
