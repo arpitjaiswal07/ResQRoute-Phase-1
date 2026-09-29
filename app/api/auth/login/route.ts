@@ -33,6 +33,16 @@ export async function POST(request: Request) {
       )
     }
 
+    // Shop providers must use the dedicated Shop Provider Login.
+    if (user.role !== 'user') {
+      return NextResponse.json(
+        {
+          error: 'Shop providers must use the Shop Provider Login.',
+        },
+        { status: 403 },
+      )
+    }
+
     if (!user.active) {
       return NextResponse.json(
         {
@@ -58,25 +68,25 @@ export async function POST(request: Request) {
 
     const cookieStore = await cookies()
 
-cookieStore.set('resqroute_user', user._id.toString(), {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
-  path: '/',
-  maxAge: 60 * 60 * 24 * 7,
-})
+    cookieStore.set('resqroute_user', user._id.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    })
 
-return NextResponse.json({
-  success: true,
-  message: 'Login successful',
-  user: {
-    id: user._id.toString(),
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    role: user.role,
-  },
-})
+    return NextResponse.json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    })
   } catch (error) {
     console.error('Login error:', error)
 

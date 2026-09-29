@@ -11,12 +11,20 @@ export async function POST(req: Request) {
       name,
       email,
       phone,
+      serviceType,
       password,
       confirmPassword,
     } = body
 
     // Validation
-    if (!name || !email || !phone || !password || !confirmPassword) {
+    if (
+      !name ||
+      !email ||
+      !phone ||
+      !serviceType ||
+      !password ||
+      !confirmPassword
+    ) {
       return NextResponse.json(
         { success: false, message: 'Please fill all fields.' },
         { status: 400 }
@@ -32,7 +40,26 @@ export async function POST(req: Request) {
 
     if (password.length < 6) {
       return NextResponse.json(
-        { success: false, message: 'Password must be at least 6 characters.' },
+        {
+          success: false,
+          message: 'Password must be at least 6 characters.',
+        },
+        { status: 400 }
+      )
+    }
+
+    const allowedServiceTypes = [
+      'mechanics',
+      'towing',
+      'rentals',
+    ]
+
+    if (!allowedServiceTypes.includes(serviceType)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Please select a valid service type.',
+        },
         { status: 400 }
       )
     }
@@ -46,7 +73,10 @@ export async function POST(req: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'An account with this email already exists.' },
+        {
+          success: false,
+          message: 'An account with this email already exists.',
+        },
         { status: 409 }
       )
     }
@@ -59,6 +89,7 @@ export async function POST(req: Request) {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: phone.trim(),
+      serviceType,
       password: hashedPassword,
       role: 'shop',
       active: true,
@@ -74,6 +105,7 @@ export async function POST(req: Request) {
           email: shop.email,
           phone: shop.phone,
           role: shop.role,
+          serviceType: shop.serviceType,
         },
       },
       { status: 201 }

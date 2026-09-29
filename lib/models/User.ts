@@ -34,10 +34,17 @@ const UserSchema = new Schema(
       default: "user",
     },
 
+    serviceType: {
+      type: String,
+      enum: ["mechanics", "towing", "rentals"],
+      default: "mechanics",
+    },
+
     active: {
       type: Boolean,
       default: true,
     },
+
     services: {
       vehicleRepair: {
         type: Boolean,

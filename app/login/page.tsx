@@ -18,14 +18,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
   return (
     <main className="auth-page">
       <div className="auth-card">
         {/* Back */}
-        <Link href="/" className="auth-back">
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          className="auth-back"
+        >
           <ArrowLeft className="size-4" />
-          Back to ResQRoute
-        </Link>
+          Back
+        </button>
 
         {/* Brand */}
         <div className="auth-brand">
@@ -65,8 +70,9 @@ export default function LoginPage() {
 
             const form = e.currentTarget;
 
-            const email = (form.elements.namedItem("email") as HTMLInputElement)
-              .value;
+            const email = (
+              form.elements.namedItem("email") as HTMLInputElement
+            ).value;
 
             const password = (
               form.elements.namedItem("password") as HTMLInputElement
@@ -91,13 +97,13 @@ export default function LoginPage() {
                 return;
               }
 
-             setSuccess("Login successful!");
+              setSuccess("Login successful!");
 
-console.log("Logged in user:", data.user);
+              console.log("Logged in user:", data.user);
 
-setTimeout(() => {
-  router.push("/user-dashboard");
-}, 700);
+              setTimeout(() => {
+                router.push("/user-dashboard");
+              }, 700);
             } catch {
               setError("Something went wrong. Please try again.");
             } finally {
@@ -143,7 +149,9 @@ setTimeout(() => {
                 type="button"
                 className="auth-password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={
+                  showPassword ? "Hide password" : "Show password"
+                }
               >
                 {showPassword ? (
                   <EyeOff className="size-5" />
@@ -161,7 +169,6 @@ setTimeout(() => {
           </label>
 
           {/* Login */}
-
           {error && <p className="auth-error">{error}</p>}
 
           {success && <p className="auth-success">{success}</p>}
@@ -183,8 +190,8 @@ setTimeout(() => {
         </div>
 
         <Link href="/user-dashboard" className="auth-guest">
-  Continue as Guest
-</Link>
+          Continue as Guest
+        </Link>
 
         {/* Security */}
         <div className="auth-security">

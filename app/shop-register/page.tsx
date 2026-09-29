@@ -1,26 +1,58 @@
 "use client";
 
 import {
+  ArrowDown,
   ArrowLeft,
+  Check,
   Eye,
   EyeOff,
   LockKeyhole,
   Mail,
   Phone,
   Store,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+
+const SERVICE_TYPES = [
+  "Mechanic / Garage",
+  "Towing Service",
+  "Emergency Rental Cars",
+];
 
 export default function ShopRegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [serviceType, setServiceType] = useState("");
+  const [serviceOpen, setServiceOpen] = useState(false);
+
+  const serviceRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        serviceRef.current &&
+        !serviceRef.current.contains(event.target as Node)
+      ) {
+        setServiceOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,7 +67,23 @@ export default function ShopRegisterPage() {
     const email = String(formData.get("email") || "");
     const phone = String(formData.get("phone") || "");
     const password = String(formData.get("password") || "");
-    const confirmPassword = String(formData.get("confirmPassword") || "");
+    const serviceType = String(formData.get("serviceType") || "");
+    const confirmPassword = String(
+      formData.get("confirmPassword") || "",
+    );
+
+      if (
+    !name ||
+    !email ||
+    !phone ||
+    !serviceType ||
+    !password ||
+    !confirmPassword
+  ) {
+    setError("Please fill all fields.");
+    setLoading(false);
+    return;
+  }
 
     try {
       const res = await fetch("/api/auth/shop-register", {
@@ -43,13 +91,14 @@ export default function ShopRegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          password,
-          confirmPassword,
-        }),
+ body: JSON.stringify({
+  name,
+  email,
+  phone,
+  serviceType,
+  password,
+  confirmPassword,
+}),
       });
 
       const data = await res.json();
@@ -129,7 +178,9 @@ export default function ShopRegisterPage() {
 
           {/* Email */}
           <div className="auth-field">
-            <label htmlFor="shop-register-email">Business email</label>
+            <label htmlFor="shop-register-email">
+              Business email
+            </label>
 
             <div className="auth-input-wrap">
               <Mail className="auth-input-icon" />
@@ -161,9 +212,47 @@ export default function ShopRegisterPage() {
             </div>
           </div>
 
+          
+          {/* Service type */}
+<div className="auth-field">
+  <label htmlFor="shop-service-type">
+    Service type
+  </label>
+
+  <div className="auth-input-wrap auth-select-wrap">
+    <Store className="auth-input-icon" />
+
+    <select
+      id="shop-service-type"
+      name="serviceType"
+      defaultValue=""
+      className="auth-select"
+      required
+    >
+      <option value="" disabled>
+        Select your service type
+      </option>
+
+      <option value="mechanics">
+        Mechanic / Garage
+      </option>
+
+      <option value="towing">
+        Towing Service
+      </option>
+
+      <option value="rentals">
+        Emergency Rental Cars
+      </option>
+    </select>
+  </div>
+</div>
+
           {/* Password */}
           <div className="auth-field">
-            <label htmlFor="shop-register-password">Password</label>
+            <label htmlFor="shop-register-password">
+              Password
+            </label>
 
             <div className="auth-input-wrap">
               <LockKeyhole className="auth-input-icon" />
@@ -171,7 +260,11 @@ export default function ShopRegisterPage() {
               <input
                 id="shop-register-password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
                 placeholder="Create a password"
                 autoComplete="new-password"
               />
@@ -179,8 +272,14 @@ export default function ShopRegisterPage() {
               <button
                 type="button"
                 className="auth-password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
               >
                 {showPassword ? (
                   <EyeOff className="size-5" />
@@ -193,7 +292,9 @@ export default function ShopRegisterPage() {
 
           {/* Confirm password */}
           <div className="auth-field">
-            <label htmlFor="shop-confirm-password">Confirm password</label>
+            <label htmlFor="shop-confirm-password">
+              Confirm password
+            </label>
 
             <div className="auth-input-wrap">
               <LockKeyhole className="auth-input-icon" />
@@ -201,7 +302,11 @@ export default function ShopRegisterPage() {
               <input
                 id="shop-confirm-password"
                 name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
                 placeholder="Confirm your password"
                 autoComplete="new-password"
               />
@@ -209,9 +314,15 @@ export default function ShopRegisterPage() {
               <button
                 type="button"
                 className="auth-password-toggle"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() =>
+                  setShowConfirmPassword(
+                    !showConfirmPassword,
+                  )
+                }
                 aria-label={
-                  showConfirmPassword ? "Hide password" : "Show password"
+                  showConfirmPassword
+                    ? "Hide password"
+                    : "Show password"
                 }
               >
                 {showConfirmPassword ? (
@@ -227,25 +338,46 @@ export default function ShopRegisterPage() {
           <label className="auth-checkbox">
             <input type="checkbox" />
 
-            <span>I agree to the Partner Terms & Privacy Policy</span>
+            <span>
+              I agree to the Partner Terms & Privacy Policy
+            </span>
           </label>
 
+          {/* Error */}
+          {error && (
+            <div className="auth-error">
+              {error}
+            </div>
+          )}
+
+          {/* Success */}
+          {success && (
+            <div className="auth-success">
+              {success}
+            </div>
+          )}
+
           {/* Submit */}
-
-          {error && <div className="auth-error">{error}</div>}
-
-          {success && <div className="auth-success">{success}</div>}
-
-          <button type="submit" className="auth-submit" disabled={loading}>
-            {loading ? "Creating Account..." : "Register Business"}
+          <button
+            type="submit"
+            className="auth-submit"
+            disabled={loading}
+          >
+            {loading
+              ? "Creating Account..."
+              : "Register Business"}
           </button>
         </form>
 
         {/* Login */}
         <div className="auth-signup">
-          <span>Already a ResQRoute partner?</span>
+          <span>
+            Already a ResQRoute partner?
+          </span>
 
-          <Link href="/shop-login">Sign in</Link>
+          <Link href="/shop-login">
+            Sign in
+          </Link>
         </div>
 
         {/* User account */}
@@ -253,7 +385,10 @@ export default function ShopRegisterPage() {
           <span>OR</span>
         </div>
 
-        <Link href="/register" className="auth-guest">
+        <Link
+          href="/register"
+          className="auth-guest"
+        >
           Create a User Account
         </Link>
       </div>

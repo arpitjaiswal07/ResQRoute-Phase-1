@@ -17,8 +17,29 @@ export function ShopCard({ shop }: { shop: Shop }) {
     `Hi ${shop.name}, I have a vehicle breakdown and need emergency assistance. Can you help?`,
   )
 
+  const hasLocation =
+    typeof shop.lat === 'number' &&
+    typeof shop.lng === 'number' &&
+    Number.isFinite(shop.lat) &&
+    Number.isFinite(shop.lng)
+
+  const mapUrl = hasLocation
+    ? `https://www.google.com/maps/search/?api=1&query=${shop.lat},${shop.lng}`
+    : undefined
+
   return (
-    <article className="rq-provider-card">
+    <article className="rq-provider-card relative">
+      {/* SHOP STATUS */}
+      <span
+        className={
+          shop.open
+            ? 'rq-open absolute right-4 top-4'
+            : 'rq-open rq-closed absolute right-4 top-4'
+        }
+      >
+        {shop.open ? 'Open' : 'Closed'}
+      </span>
+
       <div className="rq-provider-main">
         <div className="rq-provider-thumb">
           <WrenchMini />
@@ -55,10 +76,6 @@ export function ShopCard({ shop }: { shop: Shop }) {
             ))}
           </div>
         </div>
-
-        <span className="rq-open">
-          {shop.open ? 'Open' : 'Closed'}
-        </span>
       </div>
 
       {/* ACTION BUTTONS */}
@@ -93,6 +110,33 @@ export function ShopCard({ shop }: { shop: Shop }) {
           <MessageCircle className="size-4" />
           Chat
           <ArrowUpRight className="size-3.5 opacity-60" />
+        </Button>
+
+        {/* LOCATION */}
+        <Button
+          variant="outline"
+          nativeButton={false}
+          className="rq-provider-chat"
+          render={
+            <a
+              href={mapUrl}
+              target={hasLocation ? '_blank' : undefined}
+              rel={hasLocation ? 'noreferrer' : undefined}
+              aria-label={
+                hasLocation
+                  ? `Open ${shop.name} location`
+                  : 'Provider location unavailable'
+              }
+              title={
+                hasLocation
+                  ? 'Open location'
+                  : 'Location unavailable'
+              }
+            />
+          }
+        >
+          <MapPin className="size-4" />
+          Location
         </Button>
       </div>
     </article>

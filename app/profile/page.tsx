@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   ArrowLeft,
@@ -6,46 +6,47 @@ import {
   Phone,
   ShieldCheck,
   UserCircle,
-} from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type User = {
-  name: string
-  email: string
-  phone: string
-  role: string
-}
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+};
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
   useEffect(() => {
     async function loadUser() {
       try {
-        const response = await fetch('/api/auth/me')
+        const response = await fetch("/api/auth/me");
 
         if (!response.ok) {
-          setUser(null)
-          return
+          setUser(null);
+          return;
         }
 
-        const data = await response.json()
+        const data = await response.json();
 
         if (data.authenticated) {
-          setUser(data.user)
+          setUser(data.user);
         }
       } catch {
-        setUser(null)
+        setUser(null);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadUser()
-  }, [])
+    loadUser();
+  }, []);
 
   if (loading) {
     return (
@@ -54,7 +55,7 @@ export default function ProfilePage() {
           <p>Loading profile...</p>
         </div>
       </main>
-    )
+    );
   }
 
   if (!user) {
@@ -68,17 +69,22 @@ export default function ProfilePage() {
           </Link>
         </div>
       </main>
-    )
+    );
   }
 
   return (
     <main className="auth-page">
       <div className="auth-card">
 
-        <Link href="/" className="auth-back">
+        {/* Back */}
+        <button
+          type="button"
+          onClick={() => router.push("/user-dashboard")}
+          className="auth-back"
+        >
           <ArrowLeft className="size-4" />
-          Back to ResQRoute
-        </Link>
+          Back
+        </button>
 
         <div className="auth-brand">
           <div className="auth-logo">
@@ -152,26 +158,28 @@ export default function ProfilePage() {
               Your account is protected by ResQRoute authentication.
             </span>
           </div>
-          <button
-  type="button"
-  className="auth-submit"
-  onClick={async () => {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-    })
 
-    router.push('/login')
-    router.refresh()
-  }}
->
-  Sign Out
-</button>
+          <button
+            type="button"
+            className="auth-submit"
+            onClick={async () => {
+              await fetch("/api/auth/logout", {
+                method: "POST",
+              });
+
+              router.push("/login");
+              router.refresh();
+            }}
+          >
+            Sign Out
+          </button>
+
           <Link
             href="/"
             className="auth-submit"
             style={{
-              textDecoration: 'none',
-              textAlign: 'center',
+              textDecoration: "none",
+              textAlign: "center",
             }}
           >
             Back to Home
@@ -180,5 +188,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </main>
-  )
+  );
 }
